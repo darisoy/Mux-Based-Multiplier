@@ -14,5 +14,13 @@ module 2_by_2_mult(input  logic x0, x1, y0, y1,
 endmodule
 
 module 2_by_2_mult_testbench ();
+    logic x0, x1, y0, y1, p0, p1, p2, p3;
+    2_by_2_mult dut (.x0, .x1, .y0, .y1, .p0, .p1, .p2, .p3);
 
+    integer i;
+    initial begin
+        for (i = 0; i < 16; i++) begin
+            {x0, x1, y0, y1} = i; #10;
+        end
+    end
 endmodule

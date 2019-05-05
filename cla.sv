@@ -18,3 +18,20 @@ module cla(input  logic a0, a1, b0, b1, cin,
     or  cla_gate9 (cout, temp1, g1);
 
 endmodule
+
+module cla_testbench();
+    logic a0, a1, b0, b1, cin, s0, s1, cout;
+
+    cla dut (.*);
+
+    integer i;
+    initial begin
+        for (i = 0; i < 32; i++) begin
+            {a0, a1, b0, b1, cin} = i; #10;
+            assert (({a1, a0} + {b1, b0} + {1'b0, cin}) == {cout, s1, s0} ) $display ("Correct: %b%b + %b%b + 0%b = %b%b%b", a1, a0, b1, b0, cin, cout, s1, s0);
+                else $display("WRONG:   %b%b + %b%b + 0%b = %b%b%b", a1, a0, b1, b0, cin, cout, s1, s0);
+        end
+    end
+
+
+endmodule

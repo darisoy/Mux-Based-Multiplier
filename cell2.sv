@@ -1,4 +1,4 @@
-module cell2(input  logic xj, yj, cin, cj, sin
+module cell2(input  logic xj, yj, cin, cj, sin,
              output logic sj, cjp1, cout, sout, xiyi);
 
     logic temp0;
