@@ -8,7 +8,7 @@ module multiplier
     logic [SIZE - 3:0] cell2_xiyi, cell2_sin, cell2_sout, cell2_cout, cell2_cj, cell2_cin;
     logic [SIZE - 2:0] cell2_sj, cla_c;
     logic [SIZE - 3:0] cla_b1;
-    logic [SIZE - 2:0] cell1_c [SIZE - 3:0];
+    logic [SIZE - 2:0] cell1_c [SIZE - 3:0];  //size = SIZE - 2 and SIZE - 1
     logic [SIZE - 2:0] cell1_s [SIZE - 3:0];
 
     assign cla_c[0] = 1'b0;

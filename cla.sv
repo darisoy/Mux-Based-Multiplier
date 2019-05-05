@@ -14,7 +14,7 @@ module cla(input  logic a0, a1, b0, b1, cin,
     or  cla_gate6 (c1, temp0, g0);
     xor cla_gate7 (s1, c1, p1);
 
-    and cla_gate8 (temp1, p1, cin);
+    and cla_gate8 (temp1, p1, c1);
     or  cla_gate9 (cout, temp1, g1);
 
 endmodule
@@ -24,13 +24,17 @@ module cla_testbench();
 
     cla dut (.*);
 
-    integer i;
+    integer i, j;
     initial begin
+        j = 0;
         for (i = 0; i < 32; i++) begin
             {a0, a1, b0, b1, cin} = i; #10;
-            assert (({a1, a0} + {b1, b0} + {1'b0, cin}) == {cout, s1, s0} ) $display ("Correct: %b%b + %b%b + 0%b = %b%b%b", a1, a0, b1, b0, cin, cout, s1, s0);
-                else $display("WRONG:   %b%b + %b%b + 0%b = %b%b%b", a1, a0, b1, b0, cin, cout, s1, s0);
+            if (({a1, a0} + {b1, b0} + {1'b0, cin}) == {cout, s1, s0}) j++;
+            assert (({a1, a0} + {b1, b0} + {1'b0, cin}) == {cout, s1, s0} ) $display ("Correct: %b%b + %b%b + %b =  %b%b%b", a1, a0, b1, b0, cin, cout, s1, s0);
+                else $display("WRONG:   %b%b + %b%b + %b != %b%b%b", a1, a0, b1, b0, cin, cout, s1, s0);
         end
+        $display("test complete");
+        $display("%0d out of %0d calculations are correct", j, i);
     end
 
 
