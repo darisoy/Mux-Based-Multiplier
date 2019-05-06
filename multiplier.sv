@@ -8,7 +8,7 @@ module multiplier
     logic [SIZE - 3:0] cell2_xiyi, cell2_sin, cell2_sout, cell2_cout, cell2_cj, cell2_cin;
     logic [SIZE - 2:0] cell2_sj, cla_c;
     logic [SIZE - 3:0] cla_b1;
-    logic [SIZE - 2:0] cell1_c [SIZE - 3:0];  //size = SIZE - 2 and SIZE - 1
+    logic [SIZE - 2:0] cell1_c [SIZE - 3:0];
     logic [SIZE - 2:0] cell1_s [SIZE - 3:0];
 
     assign cla_c[0] = 1'b0;
@@ -35,7 +35,7 @@ module multiplier
                             .xi     (x[0]),
                             .yi     (y[0]),
                             .si     (cell2_sj[0]),
-                            .cout   (cell2_cin[0]),    //location of the destination
+                            .cout   (cell2_cin[0]),
                             .sout   (p[1])
                             );
 
@@ -48,25 +48,25 @@ module multiplier
                 cell1 mult_cell1 (
                                         .xj     (x[step + 2]),
                                         .yj     (y[step + 2]),
-                                        .sin    ((step == SIZE - 3) ? 1'b0: cell1_s[step][row]),       //locaiton of this node
-                                        .cin    (cell1_c[step][row]),       //locaiton of this node
+                                        .sin    ((step == SIZE - 3) ? 1'b0: cell1_s[step][row]),
+                                        .cin    (cell1_c[step][row]),
                                         .xi     (x[row]),
                                         .yi     (y[row]),
                                         .si     (cell2_sj[row]),
-                                        .cout   (cell1_c[step][row + 1]),       //location of the destination
-                                        .sout   (cell1_s[step - 1][row + 1])    //location of the destination
+                                        .cout   (cell1_c[step][row + 1]),
+                                        .sout   (cell1_s[step - 1][row + 1])
                                         );
             end
             cell1 mult_cell1_last0 (
                                     .xj     (x[step + 2]),
                                     .yj     (y[step + 2]),
-                                    .sin    ((step == SIZE - 3) ? 1'b0 : cell1_s[step][step]),              //locaiton of this node
-                                    .cin    (cell1_c[step][step]),              //locaiton of this node
+                                    .sin    ((step == SIZE - 3) ? 1'b0 : cell1_s[step][step]),
+                                    .cin    (cell1_c[step][step]),
                                     .xi     (x[step]),
                                     .yi     (y[step]),
                                     .si     (cell2_sj[step]),
-                                    .cout   (cell1_c[step][step + 1]),          //location of the destination
-                                    .sout   (cell2_sin[step])           //location of the destination
+                                    .cout   (cell1_c[step][step + 1]),
+                                    .sout   (cell2_sin[step])
                                     );
 
             cell2 mult_cell2 (
@@ -85,13 +85,13 @@ module multiplier
             cell1 mult_cell1_last1 (
                                     .xj     (x[step + 2]),
                                     .yj     (y[step + 2]),
-                                    .sin    ((step == SIZE - 3) ? 1'b0: cell1_s[step][step + 1]), //locaiton of this node
-                                    .cin    (cell1_c[step][step + 1]), //location of this node
+                                    .sin    ((step == SIZE - 3) ? 1'b0: cell1_s[step][step + 1]),
+                                    .cin    (cell1_c[step][step + 1]),
                                     .xi     (x[step + 1]),
                                     .yi     (y[step + 1]),
                                     .si     (cell2_sj[step + 1]),
-                                    .cout   (cell2_cin[step + 1]),          //location of the destination
-                                    .sout   (cla_b1[step])           //location of the destination
+                                    .cout   (cell2_cin[step + 1]),
+                                    .sout   (cla_b1[step])
                                     );
 
             cla mult_cla (
@@ -131,20 +131,31 @@ module multiplier
 
 endmodule
 
-module multiplier_testbench #(parameter SIZE = 10) ();
+module multiplier_testbench #(parameter SIZE = 3) ();
     logic [(SIZE - 1):0] x, y;
     logic [((2 * SIZE) - 1):0] p;
+    logic [((2 * SIZE) - 1):0] expected;
 
     multiplier #(SIZE) dut(.x, .y, .p);
 
-    integer i, j;
+    integer i, j, k;
     initial begin
         j = 0;
         for (i = 0; i < (2 ** (2 * SIZE)); i++) begin
             {x, y} = i; #10;
-            if (x * y == p) j++;
-            assert ((x * y) == p) $display ("correct: %d * %d =  %0d", x, y, p);
-                else $display("ERROR:   %d * %d != %0d", x, y, p);
+            expected = x * y;
+            assert (expected == p) begin
+                j++;
+                $display ("correct: %d * %d =  %0d", x, y, p);
+            end
+            else begin
+                $display("ERROR:   %d * %d != %0d", x, y, p);
+                $display("         at X = %b and Y = %b", x, y);
+                for (k = 0; k < (2 * SIZE); k++) begin
+                    if (p[k] != expected[k])
+                        $display("         bit %0d is wrong, expected %b, returned %b", k, expected[k], p[k]);
+                end
+            end
         end
         $display("test complete");
         $display("%0d out of %0d calculations are correct", j, i);
