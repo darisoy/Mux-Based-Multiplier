@@ -7,5 +7,5 @@ module cell2(input  logic xj, yj, cin, cj, sin,
     and cell2_and1 (temp0, cj, temp1);
     full_adder cell2_fa1 (.in0(temp0), .in1(sin), .cin(cin), .sum(sout), .cout(cout));
     assign xiyi = temp1;
-
+    
 endmodule

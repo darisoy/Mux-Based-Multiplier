@@ -1,18 +1,17 @@
-module multiplier
-#(parameter SIZE = 4)
-(
-    input  logic [(SIZE - 1):0] x, y,
-    output logic [((2 * SIZE) - 1):0] p
-);
+//this module creates a SIZExSIZE multiplier circuit
+module multiplier #(parameter SIZE = 4) (input  logic [(SIZE - 1):0] x, y,
+                                         output logic [((2 * SIZE) - 1):0] p);
 
+    //initalize variables
     logic [SIZE - 3:0] cell2_xiyi, cell2_sin, cell2_sout, cell2_cout;
     logic [SIZE - 2:0] cell2_sj, cla_c, cell2_cj, cell2_cin;
     logic [SIZE - 3:0] cla_b1;
     logic [SIZE - 2:0] cell1_c [SIZE - 3:0];
     logic [SIZE - 2:0] cell1_s [SIZE - 3:0];
-
+    logic last_xiyi, last_sout;
     assign cla_c[0] = 1'b0;
 
+    //creates the first two cells used in each multiplier
     cell2 mult_cell2_first (
                             .xj     (x[0]),
                             .yj     (y[0]),
@@ -41,9 +40,12 @@ module multiplier
 
     genvar step, row;
     generate
+        //generate the cells for each step
         for (step = 0; step < SIZE - 2; step++)  begin
             assign cell1_s[step][0] = 1'b0;
             assign cell1_c[step][0] = 1'b0;
+
+            //generate cell1-s needed for each step
             for (row = 0; row < step; row++) begin
                 cell1 mult_cell1 (
                                         .xj     (x[step + 2]),
@@ -57,6 +59,8 @@ module multiplier
                                         .sout   (cell1_s[step - 1][row + 1])
                                         );
             end
+
+            //create the cells that are the same in each step
             cell1 mult_cell1_last0 (
                                     .xj     (x[step + 2]),
                                     .yj     (y[step + 2]),
@@ -107,7 +111,8 @@ module multiplier
         end
     endgenerate
 
-    logic last_xiyi, last_sout;
+    //creates the last two cells used in each multiplier
+    //attach it to the end of the last step
     cell2 mult_cell2_last (
                             .xj     (x[SIZE - 1]),
                             .yj     (y[SIZE - 1]),
@@ -131,7 +136,7 @@ module multiplier
 
 endmodule
 
-module multiplier_testbench #(parameter SIZE = 8) ();
+module multiplier_testbench #(parameter SIZE = 6) ();
     logic [(SIZE - 1):0] x, y;
     logic [((2 * SIZE) - 1):0] p;
     logic [((2 * SIZE) - 1):0] expected;
