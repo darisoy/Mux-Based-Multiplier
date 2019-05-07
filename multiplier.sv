@@ -5,8 +5,8 @@ module multiplier
     output logic [((2 * SIZE) - 1):0] p
 );
 
-    logic [SIZE - 3:0] cell2_xiyi, cell2_sin, cell2_sout, cell2_cout, cell2_cj, cell2_cin;
-    logic [SIZE - 2:0] cell2_sj, cla_c;
+    logic [SIZE - 3:0] cell2_xiyi, cell2_sin, cell2_sout, cell2_cout;
+    logic [SIZE - 2:0] cell2_sj, cla_c, cell2_cj, cell2_cin;
     logic [SIZE - 3:0] cla_b1;
     logic [SIZE - 2:0] cell1_c [SIZE - 3:0];
     logic [SIZE - 2:0] cell1_s [SIZE - 3:0];
@@ -111,8 +111,8 @@ module multiplier
     cell2 mult_cell2_last (
                             .xj     (x[SIZE - 1]),
                             .yj     (y[SIZE - 1]),
-                            .cin    (cell2_cin[SIZE - 3]),
-                            .cj     (cell2_cj[SIZE - 3]),
+                            .cin    (cell2_cin[SIZE - 2]),
+                            .cj     (cell2_cj[SIZE - 2]),
                             .sin    (1'b0),
                             .sj     (),
                             .cjp1   (),
@@ -131,7 +131,7 @@ module multiplier
 
 endmodule
 
-module multiplier_testbench #(parameter SIZE = 3) ();
+module multiplier_testbench #(parameter SIZE = 8) ();
     logic [(SIZE - 1):0] x, y;
     logic [((2 * SIZE) - 1):0] p;
     logic [((2 * SIZE) - 1):0] expected;
