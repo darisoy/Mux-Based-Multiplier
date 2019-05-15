@@ -1,14 +1,14 @@
 //this module creates a SIZExSIZE multiplier circuit
-module multiplier #(parameter SIZE = 4) (input  logic [(SIZE - 1):0] x, y,
-                                         output logic [((2 * SIZE) - 1):0] p);
+module multiplier #(parameter SIZE = 4) (input  wire [(SIZE - 1):0] x, y,
+                                         output wire [((2 * SIZE) - 1):0] p);
 
     //initalize variables
-    logic [SIZE - 3:0] cell2_xiyi, cell2_sin, cell2_sout, cell2_cout;
-    logic [SIZE - 2:0] cell2_sj, cla_c, cell2_cj, cell2_cin;
-    logic [SIZE - 3:0] cla_b1;
-    logic [SIZE - 2:0] cell1_c [SIZE - 3:0];
-    logic [SIZE - 2:0] cell1_s [SIZE - 3:0];
-    logic last_xiyi, last_sout;
+    wire [SIZE - 3:0] cell2_xiyi, cell2_sin, cell2_sout, cell2_cout;
+    wire [SIZE - 2:0] cell2_sj, cla_c, cell2_cj, cell2_cin;
+    wire [SIZE - 3:0] cla_b1;
+    wire [SIZE - 2:0] cell1_c [SIZE - 3:0];
+    wire [SIZE - 2:0] cell1_s [SIZE - 3:0];
+    wire last_xiyi, last_sout;
     assign cla_c[0] = 1'b0;
 
     //creates the first two cells used in each multiplier
@@ -41,12 +41,12 @@ module multiplier #(parameter SIZE = 4) (input  logic [(SIZE - 1):0] x, y,
     genvar step, row;
     generate
         //generate the cells for each step
-        for (step = 0; step < SIZE - 2; step++)  begin
+        for (step = 0; step < SIZE - 2; step = step + 1)  begin
             assign cell1_s[step][0] = 1'b0;
             assign cell1_c[step][0] = 1'b0;
 
             //generate cell1-s needed for each step
-            for (row = 0; row < step; row++) begin
+            for (row = 0; row < step; row = row + 1) begin
                 cell1 mult_cell1 (
                                         .xj     (x[step + 2]),
                                         .yj     (y[step + 2]),
@@ -136,27 +136,27 @@ module multiplier #(parameter SIZE = 4) (input  logic [(SIZE - 1):0] x, y,
 
 endmodule
 
-module multiplier_testbench #(parameter SIZE = 6) ();
-    logic [(SIZE - 1):0] x, y;
-    logic [((2 * SIZE) - 1):0] p;
-    logic [((2 * SIZE) - 1):0] expected;
+module multiplier_testbench #(parameter SIZE = 5) ();
+    reg [(SIZE - 1):0] x, y;
+    wire [((2 * SIZE) - 1):0] p;
+    reg [((2 * SIZE) - 1):0] expected;
 
-    multiplier #(SIZE) dut(.x, .y, .p);
+    multiplier #(SIZE) dut(.x(x), .y(y), .p(p));
 
     integer i, j, k;
     initial begin
         j = 0;
-        for (i = 0; i < (2 ** (2 * SIZE)); i++) begin
-            {x, y} = i; #10;
-            expected = x * y;
-            assert (expected == p) begin
-                j++;
+        for (i = 0; i < (2 ** (2 * SIZE)); i = i + 1) begin
+            assign {x, y} = i; #10;
+            assign expected = x * y;
+            if (expected == p) begin
+                j = j + 1;
                 $display ("correct: %d * %d =  %0d", x, y, p);
             end
             else begin
                 $display("ERROR:   %d * %d != %0d", x, y, p);
                 $display("         at X = %b and Y = %b", x, y);
-                for (k = 0; k < (2 * SIZE); k++) begin
+                for (k = 0; k < (2 * SIZE); k = k + 1) begin
                     if (p[k] != expected[k])
                         $display("         bit %0d is wrong, expected %b, returned %b", k, expected[k], p[k]);
                 end

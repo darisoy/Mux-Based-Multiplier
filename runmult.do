@@ -4,13 +4,13 @@ vlib work
 # Compile Verilog
 #     All Verilog files that are part of this design should have
 #     their own "vlog" line below.
-vlog "./multiplier.sv"
-vlog "./mux21.sv"
-vlog "./mux41.sv"
-vlog "./cell1.sv"
-vlog "./cell2.sv"
-vlog "./cla.sv"
-vlog "./full_adder.sv"
+vlog "./multiplier.v"
+vlog "./mux21.v"
+vlog "./mux41.v"
+vlog "./cell1.v"
+vlog "./cell2.v"
+vlog "./cla.v"
+vlog "./full_adder.v"
 
 # Call vsim to invoke simulator
 #     Make sure the last item on the line is the name of the
