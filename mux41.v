@@ -1,5 +1,5 @@
 module mux41(input  logic in0, in1, in2, in3, sel0, sel1,
-               output logic out);
+             output logic out);
 
     logic out1, out2;
     mux21 m4_mux0 (.in0(in0), .in1(in1), .sel0(sel0), .out(out1));
