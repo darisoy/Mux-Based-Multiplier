@@ -1,21 +1,25 @@
+`timescale 1ns/1ns
+
 module cla(input  wire a0, a1, b0, b1, cin,
            output wire s0, s1, cout);
 
+    parameter delay = 0.05;
+
     wire p1, g1, p0, g0, c1, temp0, temp1;
-    xor cla_gate0 (p1, a1, b1);
-    and cla_gate1 (g1, a1, b1);
+    xor #(delay) cla_gate0 (p1, a1, b1);
+    and #(delay) cla_gate1 (g1, a1, b1);
 
-    xor cla_gate2 (p0, a0, b0);
-    and cla_gate3 (g0, a0, b0);
+    xor #(delay) cla_gate2 (p0, a0, b0);
+    and #(delay) cla_gate3 (g0, a0, b0);
 
-    xor cla_gate4 (s0, p0, cin);
+    xor #(delay) cla_gate4 (s0, p0, cin);
 
-    and cla_gate5 (temp0, p0, cin);
-    or  cla_gate6 (c1, temp0, g0);
-    xor cla_gate7 (s1, c1, p1);
+    and #(delay) cla_gate5 (temp0, p0, cin);
+    or  #(delay) cla_gate6 (c1, temp0, g0);
+    xor #(delay) cla_gate7 (s1, c1, p1);
 
-    and cla_gate8 (temp1, p1, c1);
-    or  cla_gate9 (cout, temp1, g1);
+    and #(delay) cla_gate8 (temp1, p1, c1);
+    or  #(delay) cla_gate9 (cout, temp1, g1);
 
 endmodule
 

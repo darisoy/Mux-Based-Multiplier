@@ -1,5 +1,9 @@
+`timescale 1ns/1ns
+
 module cell1(input  wire xj, yj, sin, cin, xi, yi, si,
              output wire cout, sout);
+
+    parameter delay = 0.05;
 
     wire temp0;
     mux41      cell1_mux (.in0(1'b0), .in1(yi), .in2(xi), .in3(si), .sel0(xj), .sel1(yj), .out(temp0));

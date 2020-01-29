@@ -1,6 +1,10 @@
+`timescale 1ns/1ns
+
 //this module creates a SIZExSIZE multiplier circuit
 module multiplier #(parameter SIZE = 4) (input  wire [(SIZE - 1):0] x, y,
                                          output wire [((2 * SIZE) - 1):0] p);
+
+    parameter delay = 0.05;
 
     //initalize variables
     wire [SIZE - 3:0] cell2_xiyi, cell2_sin, cell2_sout, cell2_cout;

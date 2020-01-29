@@ -1,5 +1,10 @@
+`timescale 1ns/1ns
+
 module mult2by2 (input  logic x0, x1, y0, y1,
                  output logic p0, p1, p2, p3);
+
+    parameter delay = 0.05;
+
     logic temp0, temp1;
     cell2 mult_cell2_0 (.xj(x0), .yj(y0), .cin(1'b0), .cj(1'b0), .sin(1'b0), .sj(temp0), .cjp1(temp1), .cout(), .sout(), .xiyi(p0));
 
